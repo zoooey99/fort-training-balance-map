@@ -1,0 +1,1525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fort Training Balance Map — Feature Demo</title>
+  <style>
+    @font-face {
+      font-family: "PP Neue Montreal";
+      src: url("https://www.fort.cx/fonts/pp-neue-montreal/PPNeueMontreal-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "PP Neue Montreal";
+      src: url("https://www.fort.cx/fonts/pp-neue-montreal/PPNeueMontreal-Medium.woff2") format("woff2");
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Fort Caslon";
+      src: url("https://www.fort.cx/fonts/caslon/BigCaslon.ttf") format("truetype");
+      font-display: swap;
+    }
+    :root {
+      --bg: #fff;
+      --card: #fafafa;
+      --ink: #161413;
+      --muted: rgba(22, 20, 19, .64);
+      --line: rgba(22, 20, 19, .12);
+      --warm: #f2eee7;
+      --burgundy: #5a1418;
+      --burgundy-soft: rgba(90, 20, 24, .16);
+      --green: #2f6f54;
+      --green-soft: rgba(47, 111, 84, .15);
+      --error: #bf3c34;
+      --gold: #b58b5f;
+      --sans: "PP Neue Montreal", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --serif: "Fort Caslon", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; }
+    button, [draggable="true"] { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid var(--burgundy);
+      outline-offset: 3px;
+    }
+    .page-header {
+      min-height: 72px;
+      padding: 20px clamp(20px, 4vw, 56px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .logo { width: 91px; height: auto; display: block; }
+    .page-tag, .eyebrow, .kicker {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .page-tag { color: var(--muted); }
+    .feature-intro {
+      padding: clamp(64px, 8vw, 120px) clamp(20px, 4vw, 56px);
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      overflow: hidden;
+    }
+    .feature-intro-layout {
+      max-width: 1080px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: clamp(48px, 10vw, 140px);
+      align-items: center;
+    }
+    .feature-intro-copy h1 {
+      max-width: 620px;
+      margin: 0;
+      font-size: clamp(58px, 7vw, 94px);
+      font-weight: 400;
+      letter-spacing: -.055em;
+      line-height: .9;
+    }
+    .feature-intro-copy p {
+      max-width: 480px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(17px, 1.6vw, 21px);
+      line-height: 1.4;
+    }
+    .feature-intro .phone {
+      position: relative;
+      top: auto;
+      justify-self: end;
+      max-width: 360px;
+      background: #fff;
+    }
+    .hero {
+      padding: clamp(64px, 7vw, 96px) clamp(20px, 4vw, 56px) 96px;
+      overflow: hidden;
+    }
+    .demo-title {
+      max-width: 1180px;
+      margin: 0 auto 14px;
+      font-size: clamp(42px, 5vw, 68px);
+      font-weight: 400;
+      letter-spacing: -.04em;
+      line-height: 1;
+      text-align: center;
+    }
+    .demo-subtitle {
+      max-width: 560px;
+      margin: 0 auto clamp(42px, 6vw, 72px);
+      color: var(--muted);
+      font-size: clamp(15px, 1.4vw, 18px);
+      line-height: 1.45;
+      text-align: center;
+    }
+    .demo-layout {
+      max-width: 1180px;
+      min-width: 0;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: clamp(30px, 5vw, 76px);
+      align-items: center;
+    }
+    .phone {
+      position: sticky;
+      top: 24px;
+      width: 100%;
+      max-width: 390px;
+      min-width: 0;
+      aspect-ratio: 390 / 844;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 20px;
+      border: 1px solid rgba(22,20,19,.18);
+      border-radius: 34px;
+      background: var(--card);
+      box-shadow: 0 24px 70px rgba(22,20,19,.10);
+      overflow: hidden;
+    }
+    .phone-head {
+      min-height: 42px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .phone-logo { width: 72px; }
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .live-dot::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px var(--green-soft);
+    }
+    .phone-wireframe {
+      flex: none;
+      display: grid;
+      gap: 10px;
+    }
+    .phone-wireframe.top { min-height: 108px; padding-top: 12px; align-content: start; }
+    .phone-wireframe.bottom { min-height: 150px; align-content: end; }
+    .wireframe-line {
+      border-radius: 999px;
+      background: rgba(22,20,19,.09);
+    }
+    .wireframe-line.short { width: 42%; height: 10px; }
+    .wireframe-line.medium { width: 68%; height: 10px; }
+    .wireframe-line.long { width: 88%; height: 10px; }
+    .wireframe-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .wireframe-card {
+      height: 42px;
+      border: 1px dashed rgba(22,20,19,.2);
+      border-radius: 7px;
+      background: rgba(22,20,19,.018);
+    }
+    .wireframe-card.large { height: 116px; }
+    .wireframe-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      padding: 18px 14px 0;
+      border-top: 1px solid var(--line);
+    }
+    .wireframe-nav .wireframe-line { width: 100%; height: 7px; }
+    .radar-wrap {
+      position: relative;
+      min-height: 326px;
+      flex: 1;
+      display: grid;
+      place-items: center;
+      margin: 10px 0 12px;
+      padding: 4px;
+      border: 1px solid rgba(22,20,19,.22);
+      border-radius: 16px;
+      background: rgba(255,255,255,.45);
+    }
+    .values-toggle {
+      position: relative;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 14px 0 56px;
+      border: 1px solid rgba(22,20,19,.16);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.94);
+      cursor: pointer;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .values-toggle::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      width: 36px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(22,20,19,.18);
+      transform: translateY(-50%);
+      transition: background 180ms;
+    }
+    .values-toggle::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(22,20,19,.24);
+      transform: translateY(-50%);
+      transition: left 180ms cubic-bezier(.2,.8,.2,1);
+    }
+    .values-toggle[aria-pressed="true"] {
+      color: var(--green);
+      border-color: rgba(47,111,84,.32);
+    }
+    .values-toggle[aria-pressed="true"]::before { background: var(--green); }
+    .values-toggle[aria-pressed="true"]::after { left: 28px; }
+    .radar-chart { width: 100%; max-height: 100%; overflow: hidden; }
+    .radar-grid { fill: none; stroke: rgba(22,20,19,.12); stroke-width: 1; }
+    .radar-axis { stroke: rgba(22,20,19,.12); stroke-width: 1; }
+    .productive-band { fill: var(--green-soft); stroke: rgba(47,111,84,.45); stroke-width: 1; fill-rule: evenodd; }
+    .start-line {
+      fill: none;
+      stroke: rgba(90,20,24,.7);
+      stroke-width: 1.25;
+      stroke-dasharray: 3 4;
+    }
+    .start-line-label {
+      fill: var(--burgundy);
+      font: 600 8px var(--sans);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .current-shape {
+      fill: var(--burgundy-soft);
+      stroke: var(--burgundy);
+      stroke-width: 2;
+      transition: d 450ms cubic-bezier(.2,.8,.2,1);
+    }
+    .radar-dot { fill: var(--burgundy); transition: cx 450ms, cy 450ms; }
+    .radar-value {
+      fill: var(--burgundy);
+      font: 600 8px var(--sans);
+      paint-order: stroke;
+      stroke: rgba(255,255,255,.92);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+    .radar-delta {
+      font: 600 8px var(--sans);
+      paint-order: stroke;
+      stroke: rgba(255,255,255,.96);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+    .radar-delta.positive { fill: var(--green); }
+    .radar-delta.negative { fill: var(--burgundy); }
+    .radar-label {
+      fill: var(--muted);
+      font: 600 9px var(--sans);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .builder {
+      min-width: 0;
+      padding-top: 8px;
+    }
+    .builder-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+    .builder h2 {
+      margin: 6px 0 0;
+      max-width: 620px;
+      font-size: clamp(32px, 4vw, 54px);
+      line-height: 1;
+      letter-spacing: -.035em;
+      font-weight: 400;
+    }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    .day-keys {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 5px 4px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+    }
+    .day-keys-label {
+      margin-right: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .key-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0 0 2px;
+      border: 1px solid rgba(22,20,19,.18);
+      border-bottom-width: 2px;
+      border-radius: 8px;
+      color: var(--ink);
+      background: var(--warm);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      transition: transform 120ms, border-color 120ms, background 120ms;
+    }
+    .key-button:hover { border-color: var(--burgundy); background: #fff; }
+    .key-button:active { transform: translateY(1px); border-bottom-width: 1px; }
+    .pill {
+      min-height: 44px;
+      padding: 0 17px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+    }
+    .pill.primary { color: #fff; background: var(--ink); border-color: var(--ink); }
+    .calendar-shell {
+      padding: 18px;
+      border-radius: 16px;
+      background: var(--warm);
+    }
+    .week-label {
+      margin: 0 0 9px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(58px, 1fr));
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+    .day {
+      position: relative;
+      min-height: 112px;
+      padding: 9px 7px 7px;
+      border: 1px solid rgba(22,20,19,.10);
+      border-radius: 10px;
+      background: rgba(255,255,255,.76);
+      transition: border-color 150ms, transform 150ms, background 150ms;
+      cursor: pointer;
+    }
+    .day:hover, .day:focus-within { z-index: 12; }
+    .day.over { border-color: var(--burgundy); background: #fff; transform: translateY(-2px); }
+    .day.selected { box-shadow: inset 0 0 0 2px var(--burgundy); }
+    .day.past { background: rgba(255,255,255,.9); }
+    .day.future:not(.actual-today) { opacity: .52; }
+    .day.today {
+      border-color: var(--burgundy);
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(90,20,24,.12);
+    }
+    .day.actual-today:not(.over) {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px var(--green-soft);
+    }
+    .day-name { display: block; color: var(--muted); font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    .day-num { position: absolute; right: 8px; top: 8px; color: rgba(22,20,19,.34); font-size: 10px; }
+    .day.today .day-num {
+      width: 24px;
+      height: 24px;
+      right: 5px;
+      top: 5px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--burgundy);
+    }
+    .day.today .day-name { color: var(--burgundy); }
+    .day.actual-today .day-name { color: var(--green); }
+    .day-marker {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      padding: 3px 5px;
+      border-radius: 5px;
+      color: #fff;
+      background: var(--green);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .day-workout {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      min-height: 57px;
+      margin-top: 19px;
+      padding: 8px 22px 7px 8px;
+      overflow: visible;
+      border: 1px solid rgba(90,20,24,.24);
+      border-radius: 7px;
+      color: var(--burgundy);
+      background: rgba(90,20,24,.055);
+      cursor: grab;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.15;
+      transition: border-color 160ms, background 160ms;
+    }
+    .deposit-preview {
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 7px);
+      z-index: 20;
+      width: 154px;
+      padding: 9px 10px;
+      border: 1px solid rgba(22,20,19,.16);
+      border-radius: 9px;
+      color: var(--ink);
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 10px 24px rgba(22,20,19,.12);
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, -4px);
+      transition: opacity 140ms, transform 140ms;
+    }
+    .deposit-preview strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .deposit-preview span {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 2px 0;
+      font-size: 10px;
+      font-weight: 400;
+    }
+    .deposit-preview b { color: var(--green); font-weight: 600; }
+    .day-workout:hover,
+    .day-workout:focus-within {
+      border-color: rgba(90,20,24,.5);
+      background: rgba(90,20,24,.09);
+    }
+    .day-workout:hover .deposit-preview,
+    .day-workout:focus-within .deposit-preview {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+    .day-workout:active { cursor: grabbing; }
+    .day-workout.dragging {
+      opacity: .55;
+      cursor: grabbing;
+      transform: scale(.97);
+    }
+    .day-workout small {
+      display: block;
+      margin-top: 4px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 400;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .day-remove {
+      position: absolute;
+      right: 3px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      color: var(--muted);
+      background: rgba(255,255,255,.9);
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(.88);
+      transition: opacity 140ms, transform 140ms, color 140ms, background 140ms;
+    }
+    .day-workout:hover .day-remove,
+    .day-workout:focus-within .day-remove {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    .day-remove:hover { color: #fff; background: var(--burgundy); }
+    @media (hover: none) {
+      .day-remove {
+        opacity: .72;
+        pointer-events: auto;
+        transform: scale(1);
+      }
+    }
+    .library-title { margin: 25px 0 10px; font-size: 13px; font-weight: 600; }
+    .library { display: flex; flex-wrap: wrap; gap: 8px; }
+    .workout {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 15px 0 11px;
+      border: 1px solid rgba(90,20,24,.28);
+      border-radius: 999px;
+      color: var(--burgundy);
+      background: rgba(255,255,255,.92);
+      cursor: grab;
+      font-size: 13px;
+      user-select: none;
+      transition: transform 150ms, border-color 150ms, background 150ms, box-shadow 150ms;
+    }
+    .workout:hover,
+    .workout:focus-visible {
+      border-color: rgba(90,20,24,.62);
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 14px rgba(22,20,19,.08);
+    }
+    .workout:active { cursor: grabbing; transform: translateY(0) scale(.98); }
+    .workout.dragging { opacity: .55; cursor: grabbing; transform: scale(.97); }
+    .drag-grip {
+      width: 10px;
+      height: 14px;
+      flex: none;
+      opacity: .62;
+      background-image: radial-gradient(currentColor 1.2px, transparent 1.3px);
+      background-position: 0 0;
+      background-size: 5px 5px;
+    }
+    .workout.selected { color: #fff; background: var(--burgundy); border-color: var(--burgundy); }
+    .graph-language {
+      position: relative;
+      z-index: 2;
+      margin: clamp(48px, 6vw, 80px) 0;
+      padding: clamp(84px, 10vw, 150px) clamp(20px, 4vw, 56px);
+      border: 1px solid var(--line);
+      border-radius: 36px;
+      background: var(--warm);
+    }
+    .language-layout {
+      max-width: 1180px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
+      gap: clamp(48px, 8vw, 120px);
+      align-items: center;
+    }
+    .language-note-label {
+      margin: 0 0 16px;
+      color: var(--burgundy);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .language-copy h2 {
+      margin: 0 0 24px;
+      max-width: 560px;
+      font-size: clamp(40px, 4.2vw, 60px);
+      line-height: 1;
+      letter-spacing: -.035em;
+      font-weight: 400;
+    }
+    .language-key { border-top: 1px solid rgba(22,20,19,.16); }
+    .language-key-item {
+      min-height: 96px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 14px;
+      align-items: center;
+      margin: 0 -12px;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(22,20,19,.16);
+      border-radius: 10px;
+      cursor: default;
+      transition: color 180ms, background 180ms, transform 180ms;
+    }
+    .language-key-item:hover,
+    .language-key-item:focus-visible,
+    .language-key-item.active {
+      color: var(--burgundy);
+      background: rgba(255,255,255,.72);
+      transform: translateX(4px);
+    }
+    .language-key-item:focus-visible { outline: 2px solid rgba(90,20,24,.35); outline-offset: 2px; }
+    .language-key-item strong { display: block; font-size: 14px; font-weight: 600; }
+    .language-points {
+      margin: 6px 0 0;
+      padding-left: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .language-points li + li { margin-top: 3px; }
+    .language-swatch {
+      width: 28px;
+      height: 18px;
+      display: block;
+    }
+    .language-swatch.floor {
+      height: 0;
+      border-top: 2px dashed var(--burgundy);
+    }
+    .language-swatch.band {
+      border: 1px solid rgba(47,111,84,.45);
+      background: var(--green-soft);
+    }
+    .language-swatch.above {
+      border: 1px solid rgba(22,20,19,.22);
+      background: rgba(255,255,255,.55);
+    }
+    .language-visual {
+      min-width: 0;
+      padding: clamp(20px, 4vw, 46px);
+      border: 1px solid rgba(22,20,19,.18);
+      border-radius: 20px;
+      background: rgba(255,255,255,.78);
+    }
+    #language-radar { width: 100%; display: block; overflow: visible; }
+    #language-radar .radar-label { font-size: 12px; cursor: default; }
+    #language-radar .language-zone {
+      cursor: pointer;
+      transition: opacity 180ms, fill 180ms, stroke-width 180ms;
+    }
+    #language-radar .language-zone-hit {
+      fill: none;
+      stroke: transparent;
+      stroke-width: 18;
+      cursor: pointer;
+      pointer-events: stroke;
+    }
+    #language-radar .above-zone {
+      fill: transparent;
+      stroke: transparent;
+      stroke-width: 1;
+      fill-rule: evenodd;
+    }
+    #language-radar[data-highlight] .language-zone { opacity: .18; }
+    #language-radar[data-highlight="floor"] .zone-floor {
+      opacity: 1;
+      stroke-width: 3;
+    }
+    #language-radar[data-highlight="band"] .zone-band {
+      opacity: 1;
+      fill: rgba(47,111,84,.28);
+      stroke-width: 2;
+    }
+    #language-radar[data-highlight="above"] .zone-above {
+      opacity: 1;
+      fill: rgba(181,139,95,.16);
+      stroke: rgba(181,139,95,.5);
+    }
+    .workout-model {
+      padding: clamp(84px, 10vw, 150px) clamp(20px, 4vw, 56px);
+      background: #fff;
+    }
+    .model-layout {
+      max-width: 1180px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(250px, .7fr) minmax(0, 1.3fr);
+      gap: clamp(48px, 8vw, 120px);
+      align-items: center;
+    }
+    .model-copy h2 {
+      margin: 0;
+      max-width: 480px;
+      font-size: clamp(40px, 4.2vw, 60px);
+      line-height: 1;
+      letter-spacing: -.035em;
+      font-weight: 400;
+    }
+    .model-rule {
+      max-width: 420px;
+      margin: 28px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .model-rule strong { color: var(--ink); font-weight: 600; }
+    .allocation-card {
+      border: 1px solid rgba(22,20,19,.2);
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--card);
+    }
+    .allocation-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      padding: clamp(22px, 3vw, 34px);
+      border-bottom: 1px solid var(--line);
+    }
+    .allocation-kicker {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .allocation-name { margin: 0; font-size: 22px; font-weight: 600; }
+    .allocation-total {
+      flex: none;
+      color: var(--burgundy);
+      font-family: var(--sans);
+      font-size: clamp(42px, 5vw, 62px);
+      line-height: .8;
+      white-space: nowrap;
+    }
+    .allocation-total small {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .contribution-scroll {
+      padding: 0 clamp(18px, 3vw, 32px) clamp(20px, 3vw, 30px);
+      overflow-x: auto;
+    }
+    .contribution-graph {
+      min-width: 610px;
+      display: grid;
+      grid-template-columns: 138px repeat(7, minmax(48px, 1fr));
+      align-items: center;
+    }
+    .graph-axis {
+      padding: 14px 6px 10px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .graph-axis:first-child { text-align: left; }
+    .exercise-node {
+      position: relative;
+      min-height: 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 9px 22px 9px 0;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .exercise-node::after {
+      content: "→";
+      position: absolute;
+      right: 5px;
+      color: rgba(90,20,24,.45);
+      font-size: 15px;
+    }
+    .exercise-node small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+    .deposit-cell {
+      min-height: 56px;
+      display: grid;
+      place-items: center;
+      padding: 8px 6px;
+      border-top: 1px solid var(--line);
+    }
+    .deposit-mark {
+      width: var(--credit);
+      height: 20px;
+      display: grid;
+      place-items: center;
+      justify-self: center;
+      border-radius: 999px;
+      color: var(--burgundy);
+      background: rgba(90,20,24,.14);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      overflow: visible;
+    }
+    .deposit-mark[style*="25%"] { min-width: 28px; }
+    .graph-total-label,
+    .graph-total {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      border-top: 2px solid rgba(22,20,19,.42);
+      color: var(--ink);
+      background: rgba(22,20,19,.045);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .graph-total { justify-content: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .graph-total-label {
+      padding-left: 14px;
+      border-radius: 12px 0 0 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .graph-total:last-child { border-radius: 0 12px 12px 0; }
+    @media (max-width: 920px) {
+      .feature-intro-layout { grid-template-columns: 1fr; }
+      .feature-intro-copy { max-width: 720px; }
+      .feature-intro .phone { justify-self: center; }
+      .demo-layout { grid-template-columns: 1fr; }
+      .language-layout { grid-template-columns: 1fr; }
+      .model-layout { grid-template-columns: 1fr; }
+      .phone { position: relative; top: 0; margin: auto; }
+      .builder { max-width: 760px; margin: auto; }
+    }
+    @media (max-width: 620px) {
+      .page-header { min-height: 60px; }
+      .feature-intro { padding-left: 14px; padding-right: 14px; }
+      .feature-intro-copy h1 { font-size: clamp(52px, 17vw, 68px); }
+      .hero { padding-left: 14px; padding-right: 14px; }
+      .phone { width: 100%; border-radius: 24px; }
+      .builder-head { display: block; }
+      .controls { justify-content: flex-start; margin-top: 16px; }
+      .calendar-shell { padding: 12px; overflow-x: auto; }
+      .calendar { min-width: 610px; }
+      .allocation-head { align-items: start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <img class="logo" src="https://www.fort.cx/images/fort-spellout-logo-black-transparent.png" alt="Fort">
+    <p class="page-tag">[Feature concept]</p>
+  </header>
+
+  <main>
+    <section class="feature-intro" aria-labelledby="feature-title">
+      <div class="feature-intro-layout">
+        <div class="feature-intro-copy">
+          <h1 id="feature-title">Training Balance Map</h1>
+          <p>See how recent strength work adds up across movement patterns, where it is fading, and what may need attention next.</p>
+        </div>
+
+        <article class="phone" aria-label="Example Training Balance Map app view">
+          <div class="phone-head">
+            <img class="phone-logo" src="https://www.fort.cx/images/fort-spellout-logo-black-transparent.png" alt="Fort">
+            <span class="live-dot">Synced</span>
+          </div>
+          <div class="phone-wireframe top" aria-hidden="true">
+            <span class="wireframe-line long"></span>
+            <span class="wireframe-line medium"></span>
+            <span class="wireframe-card large"></span>
+          </div>
+          <div class="radar-wrap">
+            <svg id="hero-radar" class="radar-chart" viewBox="0 0 350 326" role="img" aria-labelledby="heroRadarTitle heroRadarDesc">
+              <title id="heroRadarTitle">Example Training Balance Map</title>
+              <desc id="heroRadarDesc">A pre-filled view of recent training across seven movement patterns.</desc>
+            </svg>
+          </div>
+          <div class="phone-wireframe bottom" aria-hidden="true">
+            <div class="wireframe-cards">
+              <span class="wireframe-card"></span>
+              <span class="wireframe-card"></span>
+              <span class="wireframe-card"></span>
+            </div>
+            <span class="wireframe-line short"></span>
+            <span class="wireframe-line long"></span>
+            <span class="wireframe-line medium"></span>
+            <div class="wireframe-nav">
+              <span class="wireframe-line"></span>
+              <span class="wireframe-line"></span>
+              <span class="wireframe-line"></span>
+              <span class="wireframe-line"></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="hero" aria-labelledby="data-demo-title">
+      <h2 class="demo-title" id="data-demo-title">Interactive Feature Demo</h2>
+      <p class="demo-subtitle">Simulate three weeks of workout data to see how the Training Balance Map changes day by day.</p>
+      <div class="demo-layout">
+        <article class="phone" aria-label="Training Balance mobile feature">
+          <div class="phone-head">
+            <img class="phone-logo" src="https://www.fort.cx/images/fort-spellout-logo-black-transparent.png" alt="Fort">
+            <span class="live-dot">Synced</span>
+          </div>
+          <div class="phone-wireframe top" aria-hidden="true">
+            <span class="wireframe-line long"></span>
+            <span class="wireframe-line medium"></span>
+            <span class="wireframe-card large"></span>
+          </div>
+          <div class="radar-wrap">
+            <svg id="radar" class="radar-chart" viewBox="0 0 350 326" role="img" aria-labelledby="radarTitle radarDesc">
+              <title id="radarTitle">Current training balance across seven movement patterns</title>
+              <desc id="radarDesc">The chart updates when workouts are added to the calendar.</desc>
+            </svg>
+          </div>
+          <div class="phone-wireframe bottom" aria-hidden="true">
+            <div class="wireframe-cards">
+              <span class="wireframe-card"></span>
+              <span class="wireframe-card"></span>
+              <span class="wireframe-card"></span>
+            </div>
+            <span class="wireframe-line short"></span>
+            <span class="wireframe-line long"></span>
+            <span class="wireframe-line medium"></span>
+            <div class="wireframe-nav">
+              <span class="wireframe-line"></span>
+              <span class="wireframe-line"></span>
+              <span class="wireframe-line"></span>
+              <span class="wireframe-line"></span>
+            </div>
+          </div>
+        </article>
+
+        <section class="builder" aria-label="Interactive training data demo">
+          <div class="builder-head">
+            <button class="values-toggle" id="values-toggle" type="button" aria-pressed="false">Show set values</button>
+            <div class="controls">
+              <div class="day-keys" aria-label="Move between days">
+                <span class="day-keys-label">Day</span>
+                <button class="key-button" id="previous-day" type="button" aria-label="Previous day" title="Previous day (Left arrow)">←</button>
+                <button class="key-button" id="next-day" type="button" aria-label="Next day" title="Next day (Right arrow)">→</button>
+              </div>
+              <button class="pill" id="clear">Clear</button>
+              <button class="pill primary" id="story-toggle">Pause</button>
+            </div>
+          </div>
+          <div class="calendar-shell" aria-label="The last three weeks, ending today">
+            <p class="week-label">Three weeks ago</p>
+            <div class="calendar" id="week-one"></div>
+            <p class="week-label">Two weeks ago</p>
+            <div class="calendar" id="week-two"></div>
+            <p class="week-label">This week</p>
+            <div class="calendar" id="week-three"></div>
+          </div>
+          <p class="library-title">Add workouts</p>
+          <div class="library" id="library" aria-label="Workout library"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="graph-language" aria-labelledby="language-title">
+      <div class="language-layout">
+        <div class="language-copy">
+          <h2 id="language-title">Ranges show how your workload adds up.</h2>
+          <div class="language-key">
+            <div class="language-key-item" data-zone="floor" tabindex="0">
+              <span class="language-swatch floor" aria-hidden="true"></span>
+              <div>
+                <strong>Action floor</strong>
+                <ul class="language-points">
+                  <li>Three sets below the productive range</li>
+                  <li>Another session may be useful soon</li>
+                  <li>Separates “below target” from “I need to train immediately”</li>
+                </ul>
+              </div>
+            </div>
+            <div class="language-key-item" data-zone="band" tabindex="0">
+              <span class="language-swatch band" aria-hidden="true"></span>
+              <div>
+                <strong>Productive range</strong>
+                <ul class="language-points">
+                  <li>10–20 effective sets of recent work</li>
+                  <li>A useful range, not a score to maximize</li>
+                  <li>Leaves room for different routines and preferences</li>
+                </ul>
+              </div>
+            </div>
+            <div class="language-key-item" data-zone="above" tabindex="0">
+              <span class="language-swatch above" aria-hidden="true"></span>
+              <div>
+                <strong>Above range</strong>
+                <ul class="language-points">
+                  <li>More work on the same pattern may not be useful yet</li>
+                  <li>Makes recovery visible without prescribing an exact rest day</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="language-visual">
+          <svg id="language-radar" viewBox="0 0 560 500" role="img" aria-labelledby="languageRadarTitle languageRadarDesc">
+            <title id="languageRadarTitle">Training Balance graph visual language</title>
+            <desc id="languageRadarDesc">A point-free radar showing the dotted action floor, green productive range, and space above range.</desc>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="workout-model" aria-labelledby="model-title">
+      <div class="model-layout">
+        <div class="model-copy">
+          <h2 id="model-title">A workout becomes effective sets by pattern.</h2>
+          <p class="model-rule"><strong>Each working set counts fully toward its primary pattern.</strong> Secondary patterns can receive additional partial credit, so pattern contributions do not need to sum back to the workout’s physical set count.</p>
+        </div>
+
+        <div class="allocation-card">
+          <div class="allocation-head">
+            <div>
+              <p class="allocation-name">Example: Full body session</p>
+            </div>
+            <div class="allocation-total">18<small>working sets</small></div>
+          </div>
+          <div class="contribution-scroll">
+            <div class="contribution-graph" role="img" aria-label="Six exercises deposit effective sets across seven movement patterns and sum to the full workout">
+              <span class="graph-axis">Exercise</span><span class="graph-axis">Squat</span><span class="graph-axis">Hinge</span><span class="graph-axis">Lunge</span><span class="graph-axis">Push</span><span class="graph-axis">Pull</span><span class="graph-axis">Carry</span><span class="graph-axis">Core</span>
+
+              <span class="exercise-node">Barbell row<small>3 working sets</small></span>
+              <span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:50%">1.5</span></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:100%">3</span></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:25%">.75</span></span>
+
+              <span class="exercise-node">Back squat<small>3 working sets</small></span>
+              <span class="deposit-cell"><span class="deposit-mark" style="--credit:100%">3</span></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:25%">.75</span></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:50%">1.5</span></span>
+
+              <span class="exercise-node">Conventional deadlift<small>3 working sets</small></span>
+              <span class="deposit-cell"><span class="deposit-mark" style="--credit:25%">.75</span></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:100%">3</span></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:25%">.75</span></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:50%">1.5</span></span>
+
+              <span class="exercise-node">Bench press<small>3 working sets</small></span>
+              <span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:100%">3</span></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span>
+
+              <span class="exercise-node">Walking lunge<small>3 working sets</small></span>
+              <span class="deposit-cell"><span class="deposit-mark" style="--credit:25%">.75</span></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:100%">3</span></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:25%">.75</span></span>
+
+              <span class="exercise-node">Farmer carry<small>3 working sets</small></span>
+              <span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:100%">3</span></span><span class="deposit-cell"><span class="deposit-mark" style="--credit:50%">1.5</span></span>
+
+              <span class="graph-total-label">Workout total</span><span class="graph-total">4.5</span><span class="graph-total">5.25</span><span class="graph-total">3</span><span class="graph-total">3</span><span class="graph-total">3</span><span class="graph-total">3.75</span><span class="graph-total">6</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      NEXT SECTION PLACEHOLDER: "See the gaps in your training."
+      Use identify-gaps-in-your-routine.png as the primary visual.
+      Explain how an uneven shape makes missing movement patterns legible at a glance.
+      Keep this section user-facing; avoid model details.
+    -->
+
+    <!--
+      FUTURE SECTION PLACEHOLDER: decay over time.
+      Use a more technical chart derived from the stimulus model.
+      Show a large workout deposit followed by a smooth seven-day half-life decay,
+      then a second stimulus that creates another visible jump.
+      Explain that the map rolls continuously rather than resetting each Monday.
+    -->
+
+  </main>
+
+  <script>
+    const axes = ["Squat","Hinge","Lunge","Push","Pull","Carry","Core"];
+    const workouts = [
+      {
+        id:"lower", name:"Lower body", short:"Lower body", effect:"18 sets · Squat + hinge",
+        exercises:["Back squat ×4","Romanian deadlift ×3","Walking lunge ×3","Hip thrust ×3","Plank ×3","Farmer carry ×2"],
+        v:[4.75,7,3,0,0,2,1]
+      },
+      {
+        id:"upper", name:"Upper body", short:"Upper body", effect:"18 sets · Push + pull",
+        exercises:["Bench press ×4","Barbell row ×4","Overhead press ×3","Pull-up ×3","Push-up ×2","Biceps curl ×2"],
+        v:[0,2,0,9,8,0,.5]
+      },
+      {
+        id:"pull", name:"Pull + hinge", short:"Pull + hinge", effect:"18 sets · Posterior",
+        exercises:["Conventional deadlift ×4","Barbell row ×4","Pull-up ×3","Romanian deadlift ×3","Face pull ×2","Farmer carry ×2"],
+        v:[1,9,0,0,8,3,1]
+      },
+      {
+        id:"push", name:"Push + core", short:"Push + core", effect:"18 sets · Push + trunk",
+        exercises:["Bench press ×4","Overhead press ×3","Push-up ×3","Dip ×3","Plank ×3","Farmer carry ×2"],
+        v:[0,0,0,10,0,2,6]
+      },
+      {
+        id:"full", name:"Full body", short:"Full body", effect:"18 sets · All patterns",
+        exercises:["Back squat ×3","Conventional deadlift ×3","Bench press ×3","Barbell row ×3","Walking lunge ×3","Farmer carry ×3"],
+        v:[4.5,5.25,3,3,3,3.75,3]
+      },
+      {
+        id:"carry", name:"Carry + conditioning", short:"Carry", effect:"18 sets · Carry + core",
+        exercises:["Farmer carry ×4","Suitcase carry ×3","Overhead carry ×3","Kettlebell swing ×3","Step-up ×3","Plank ×2"],
+        v:[.75,3,3,0.75,0,10,4]
+      }
+    ];
+    const model={ maintain:4, target:10, above:20, max:20, halfLife:7 };
+    const radarScale={ start:1.35, max:2.8, curve:.7 };
+    const deltaDisplayMs=1800;
+    const sample = [
+      {day:1,id:"lower"}, {day:3,id:"upper"}, {day:5,id:"full"},
+      {day:8,id:"push"}, {day:10,id:"lower"}, {day:12,id:"carry"},
+      {day:15,id:"pull"}, {day:17,id:"upper"}, {day:19,id:"full"}
+    ];
+    const state = {
+      calendar:Array(21).fill(null),
+      selectedAxis:4,
+      selectedWorkout:null,
+      playing:true,
+      currentDay:0,
+      displayValues:Array(7).fill(0),
+      animationFrame:null,
+      showSetValues:false,
+      activeDeltas:Array(7).fill(0),
+      deltaStartedAt:0
+    };
+    let dragPayload = null;
+    let storyTimer = null;
+
+    function polar(cx,cy,r,i,n=7) {
+      const a = -Math.PI/2 + i * Math.PI*2/n;
+      return [cx + Math.cos(a)*r, cy + Math.sin(a)*r];
+    }
+    function points(values,cx,cy,r,max=12) {
+      return values.map((v,i)=>polar(cx,cy,r*Math.max(0,Math.min(v/max,1)),i).join(",")).join(" ");
+    }
+    function ringPath(innerValue,outerValue,cx,cy,r,max) {
+      const outer=Array.from({length:7},(_,i)=>polar(cx,cy,r*Math.min(outerValue/max,1),i));
+      const inner=Array.from({length:7},(_,i)=>polar(cx,cy,r*Math.min(innerValue/max,1),i)).reverse();
+      return `M ${outer.map(point=>point.join(",")).join(" L ")} Z M ${inner.map(point=>point.join(",")).join(" L ")} Z`;
+    }
+    function svgEl(name,attrs={}) {
+      const e=document.createElementNS("http://www.w3.org/2000/svg",name);
+      Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+      return e;
+    }
+    function drawLanguageRadar() {
+      const svg=document.querySelector("#language-radar");
+      const cx=280, cy=246, r=176, visualMax=24;
+      function makeZoneInteractive(element,zone) {
+        element.dataset.zone=zone;
+        element.setAttribute("tabindex","0");
+        element.setAttribute("role","button");
+        element.setAttribute("aria-label",`Highlight ${zone} range`);
+        element.addEventListener("mouseenter",()=>setLanguageHighlight(zone));
+        element.addEventListener("mouseleave",()=>setLanguageHighlight());
+        element.addEventListener("focus",()=>setLanguageHighlight(zone));
+        element.addEventListener("blur",()=>setLanguageHighlight());
+      }
+      [.25,.5,.75,1].forEach(level=>{
+        svg.appendChild(svgEl("polygon",{points:points(Array(7).fill(visualMax*level),cx,cy,r,visualMax),"class":"radar-grid"}));
+      });
+      axes.forEach((axis,index)=>{
+        const [x,y]=polar(cx,cy,r,index);
+        svg.appendChild(svgEl("line",{x1:cx,y1:cy,x2:x,y2:y,class:"radar-axis"}));
+      });
+      const above=svgEl("path",{d:ringPath(model.above,visualMax,cx,cy,r,visualMax),class:"above-zone language-zone zone-above"});
+      const aboveTitle=svgEl("title");
+      aboveTitle.textContent=`Above range: more than ${model.above} effective sets`;
+      above.appendChild(aboveTitle);
+      makeZoneInteractive(above,"above");
+      svg.appendChild(above);
+      const band=svgEl("path",{d:ringPath(model.target,model.above,cx,cy,r,visualMax),class:"productive-band language-zone zone-band"});
+      const bandTitle=svgEl("title");
+      bandTitle.textContent=`Productive range: ${model.target} to ${model.above} effective sets`;
+      band.appendChild(bandTitle);
+      makeZoneInteractive(band,"band");
+      svg.appendChild(band);
+      const actionFloor=model.target-3;
+      const floorPoints=points(Array(7).fill(actionFloor),cx,cy,r,visualMax);
+      const floor=svgEl("polygon",{points:floorPoints,class:"start-line language-zone zone-floor"});
+      makeZoneInteractive(floor,"floor");
+      svg.appendChild(floor);
+      const floorHit=svgEl("polygon",{points:floorPoints,class:"language-zone-hit"});
+      makeZoneInteractive(floorHit,"floor");
+      svg.appendChild(floorHit);
+      axes.forEach((axis,index)=>{
+        const [x,y]=polar(cx,cy,r+36,index);
+        const label=svgEl("text",{x,y,class:"radar-label","text-anchor":x<cx-8?"end":x>cx+8?"start":"middle","dominant-baseline":"middle"});
+        label.textContent=axis;
+        svg.appendChild(label);
+      });
+    }
+    function currentValues(day=state.currentDay) {
+      const totals=Array(7).fill(0);
+      const lambda=Math.log(2)/model.halfLife;
+      state.calendar.forEach((id,workoutDay)=>{
+        if(!id || workoutDay>day) return;
+        const w=workouts.find(x=>x.id===id);
+        const age=day-workoutDay;
+        const decay=Math.exp(-lambda*age);
+        w.v.forEach((v,i)=>totals[i]+=v*decay);
+      });
+      return totals;
+    }
+    function animateRadarTo(target) {
+      cancelAnimationFrame(state.animationFrame);
+      const start=[...state.displayValues];
+      const started=performance.now();
+      const duration=1100;
+      state.activeDeltas=target.map((v,i)=>v-start[i]);
+      state.deltaStartedAt=started;
+      function frame(now) {
+        const raw=Math.max(0,Math.min((now-started)/duration,1));
+        const eased=1-Math.pow(1-raw,3);
+        state.displayValues=start.map((v,i)=>v+(target[i]-v)*eased);
+        drawRadar(document.querySelector("#radar"),state.displayValues);
+        if(now-started<deltaDisplayMs) {
+          state.animationFrame=requestAnimationFrame(frame);
+        } else {
+          state.displayValues=[...target];
+          drawRadar(document.querySelector("#radar"),state.displayValues);
+        }
+      }
+      state.animationFrame=requestAnimationFrame(frame);
+    }
+    function drawRadar(svg,values,{cx=175,cy=164,r=113,labels=true}={}) {
+      svg.innerHTML="";
+      const g=model;
+      const peak=Math.max(...values,0);
+      const startScale=g.target*radarScale.start;
+      const maxPlannedScale=Math.max(startScale,g.target*radarScale.max);
+      const scaleRange=Math.max(maxPlannedScale-startScale,.01);
+      const progress=Math.max(0,Math.min((peak-startScale)/scaleRange,1));
+      const proportionalScale=startScale+scaleRange*Math.pow(progress,radarScale.curve);
+      const visualMax=Math.max(startScale,proportionalScale,g.above*1.08,peak*1.08);
+      const actionFloor=Math.max(0,g.target-3);
+      const clipId=`${svg.id}-shape-clip`;
+      const defs=svgEl("defs");
+      const clip=svgEl("clipPath",{id:clipId});
+      clip.appendChild(svgEl("circle",{cx,cy,r:r+2}));
+      defs.appendChild(clip);
+      svg.appendChild(defs);
+      [.25,.5,.75,1].forEach(level=>{
+        svg.appendChild(svgEl("polygon",{points:points(Array(7).fill(visualMax*level),cx,cy,r,visualMax),"class":"radar-grid"}));
+      });
+      axes.forEach((axis,i)=>{
+        const [x,y]=polar(cx,cy,r,i);
+        svg.appendChild(svgEl("line",{x1:cx,y1:cy,x2:x,y2:y,class:"radar-axis"}));
+      });
+      const band=svgEl("path",{d:ringPath(g.target,g.above,cx,cy,r,visualMax),class:"productive-band"});
+      const bandTitle=svgEl("title");
+      bandTitle.textContent=`Productive range: ${g.target} to ${g.above} effective sets per week`;
+      band.appendChild(bandTitle);
+      svg.appendChild(band);
+      svg.appendChild(svgEl("polygon",{points:points(Array(7).fill(actionFloor),cx,cy,r,visualMax),class:"start-line"}));
+      if(svg.id==="radar") {
+        const floorY=cy-r*Math.min(actionFloor/visualMax,1)-6;
+        const floorLabel=svgEl("text",{x:cx,y:floorY,class:"start-line-label","text-anchor":"middle"});
+        svg.appendChild(floorLabel);
+      }
+      const shape=svgEl("polygon",{points:points(values,cx,cy,r,visualMax),class:"current-shape","clip-path":`url(#${clipId})`});
+      svg.appendChild(shape);
+      values.forEach((v,i)=>{
+        const [x,y]=polar(cx,cy,r*Math.max(0,Math.min(v/visualMax,1)),i);
+        const dot=svgEl("circle",{cx:x,cy:y,r:i===state.selectedAxis?5:3,class:"radar-dot"});
+        dot.addEventListener("click",()=>{ state.selectedAxis=i; render(); });
+        svg.appendChild(dot);
+        if(svg.id==="radar" && state.showSetValues) {
+          const value=svgEl("text",{
+            x:x+(x<cx?-7:7),
+            y:y+(y<cy?-6:11),
+            class:"radar-value",
+            "text-anchor":x<cx?"end":"start"
+          });
+          value.textContent=v<.05?"0":v.toFixed(1).replace(/\.0$/,"");
+          svg.appendChild(value);
+        }
+      });
+      if(labels) axes.forEach((axis,i)=>{
+        const [x,y]=polar(cx,cy,r+23,i);
+        const t=svgEl("text",{x,y,class:"radar-label","text-anchor":x<cx-8?"end":x>cx+8?"start":"middle","dominant-baseline":"middle"});
+        t.textContent=axis;
+        t.addEventListener("click",()=>{ state.selectedAxis=i; render(); });
+        svg.appendChild(t);
+        if(svg.id==="radar" && state.showSetValues) {
+          const delta=state.activeDeltas[i];
+          const elapsed=performance.now()-state.deltaStartedAt;
+          if(Math.abs(delta)>=.05 && elapsed<deltaDisplayMs) {
+            const estimatedLabelWidth=axis.length*5.5;
+            const labelCenterX=x<cx-8
+              ? x-estimatedLabelWidth/2
+              : x>cx+8
+                ? x+estimatedLabelWidth/2
+                : x;
+            const d=svgEl("text",{
+              x:labelCenterX,
+              y:y+11,
+              class:`radar-delta ${delta>0?"positive":"negative"}`,
+              opacity:Math.max(0,1-elapsed/deltaDisplayMs).toFixed(2),
+              "text-anchor":"middle",
+              "dominant-baseline":"middle"
+            });
+            d.textContent=`${delta>0?"+":"−"}${Math.abs(delta).toFixed(1).replace(/\.0$/,"")}`;
+            svg.appendChild(d);
+          }
+        }
+      });
+    }
+    function renderPhone({animate=true}={}) {
+      const values=currentValues();
+      if(animate) animateRadarTo(values);
+      else {
+        state.displayValues=[...values];
+        drawRadar(document.querySelector("#radar"),values);
+      }
+    }
+    function renderCalendar() {
+      const weekContainers=[
+        document.querySelector("#week-one"),
+        document.querySelector("#week-two"),
+        document.querySelector("#week-three")
+      ];
+      weekContainers.forEach(x=>x.innerHTML="");
+      const names=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      state.calendar.forEach((id,index)=>{
+        const day=document.createElement("div");
+        day.className=`day ${index<state.currentDay?"past":index===state.currentDay?"today":"future"}${index===state.calendar.length-1?" actual-today":""}`;
+        day.dataset.day=index;
+        day.tabIndex=0;
+        day.setAttribute("role","button");
+        if(index===state.currentDay) day.setAttribute("aria-current","date");
+        day.setAttribute("aria-label",`${names[index%7]}, day ${index+1}${index===state.calendar.length-1?", today":""}${id?`, ${workouts.find(w=>w.id===id).name}`:""}`);
+        const w=workouts.find(x=>x.id===id);
+        const depositPreview=w
+          ? `<span class="deposit-preview" role="tooltip"><strong>Effective sets added</strong>${w.v.map((value,i)=>value?`<span>${axes[i]} <b>+${value.toFixed(2).replace(/\.?0+$/,"")}</b></span>`:"").join("")}</span>`
+          : "";
+        day.innerHTML=`<span class="day-name">${names[index%7]}</span><span class="day-num">${index+1}</span>${w?`<span class="day-workout">${w.short}<button class="day-remove" type="button" aria-label="Remove ${w.name} from ${names[index%7]}">×</button>${depositPreview}</span>`:""}${index===state.calendar.length-1?`<span class="day-marker">Today</span>`:""}`;
+        day.addEventListener("dragover",e=>{e.preventDefault();day.classList.add("over")});
+        day.addEventListener("dragleave",()=>day.classList.remove("over"));
+        day.addEventListener("drop",e=>{
+          e.preventDefault(); day.classList.remove("over");
+          if(!dragPayload) return;
+          if(dragPayload.type==="day") state.calendar[dragPayload.day]=null;
+          state.calendar[index]=dragPayload.id;
+          dragPayload=null;
+          render();
+        });
+        function selectDay() {
+          state.currentDay=index;
+          if(state.selectedWorkout) {
+            state.calendar[index]=state.selectedWorkout;
+            state.selectedWorkout=null;
+          }
+          render();
+        }
+        day.addEventListener("click",selectDay);
+        day.addEventListener("keydown",e=>{
+          if(e.key==="Enter"||e.key===" ") { e.preventDefault(); selectDay(); }
+        });
+        const remove=day.querySelector(".day-remove");
+        const scheduledWorkout=day.querySelector(".day-workout");
+        if(scheduledWorkout) {
+          scheduledWorkout.draggable=true;
+          scheduledWorkout.addEventListener("dragstart",e=>{
+            e.stopPropagation();
+            dragPayload={type:"day",day:index,id};
+            scheduledWorkout.classList.add("dragging");
+          });
+          scheduledWorkout.addEventListener("dragend",()=>scheduledWorkout.classList.remove("dragging"));
+        }
+        if(remove) remove.addEventListener("click",e=>{
+          e.stopPropagation();
+          state.calendar[index]=null;
+          render();
+        });
+        weekContainers[Math.floor(index/7)].appendChild(day);
+      });
+    }
+    function renderLibrary() {
+      const lib=document.querySelector("#library"); lib.innerHTML="";
+      workouts.forEach(w=>{
+        const b=document.createElement("button");
+        b.className=`workout${state.selectedWorkout===w.id?" selected":""}`;
+        b.type="button";
+        b.draggable=true;
+        b.setAttribute("aria-label",`${w.name}: ${w.exercises.join(", ")}. Drag to a day, or select then choose a day.`);
+        b.title=w.exercises.join(" · ");
+        b.innerHTML=`<span class="drag-grip" aria-hidden="true"></span><span>${w.name}</span>`;
+        b.addEventListener("dragstart",()=>{dragPayload={type:"library",id:w.id};b.classList.add("dragging")});
+        b.addEventListener("dragend",()=>b.classList.remove("dragging"));
+        b.addEventListener("click",()=>{state.selectedWorkout=state.selectedWorkout===w.id?null:w.id;renderLibrary()});
+        lib.appendChild(b);
+      });
+    }
+    function render() { renderPhone(); renderCalendar(); renderLibrary(); }
+    function stepDay(direction) {
+      state.currentDay=(state.currentDay+direction+state.calendar.length)%state.calendar.length;
+      render();
+      if(state.playing) scheduleStoryTimer();
+    }
+    function scheduleStoryTimer() {
+      clearInterval(storyTimer);
+      storyTimer=setInterval(()=>{
+        state.currentDay=(state.currentDay+1)%state.calendar.length;
+        render();
+      },2200);
+    }
+    function pauseStory() {
+      state.playing=false; clearInterval(storyTimer);
+      document.querySelector("#story-toggle").textContent="Resume";
+      renderCalendar();
+    }
+    function startStory() {
+      state.playing=true;
+      document.querySelector("#story-toggle").textContent="Pause";
+      scheduleStoryTimer();
+      render();
+    }
+    document.querySelector("#clear").addEventListener("click",()=>{state.calendar.fill(null);render()});
+    document.querySelector("#values-toggle").addEventListener("click",event=>{
+      state.showSetValues=!state.showSetValues;
+      event.currentTarget.setAttribute("aria-pressed",String(state.showSetValues));
+      drawRadar(document.querySelector("#radar"),state.displayValues);
+    });
+    document.querySelector("#story-toggle").addEventListener("click",()=>state.playing?pauseStory():startStory());
+    document.querySelector("#previous-day").addEventListener("click",()=>stepDay(-1));
+    document.querySelector("#next-day").addEventListener("click",()=>stepDay(1));
+    const languageRadar=document.querySelector("#language-radar");
+    function setLanguageHighlight(zone="") {
+      if(zone) languageRadar.dataset.highlight=zone;
+      else delete languageRadar.dataset.highlight;
+      document.querySelectorAll(".language-key-item").forEach(item=>{
+        item.classList.toggle("active",item.dataset.zone===zone);
+      });
+    }
+    document.querySelectorAll(".language-key-item").forEach(item=>{
+      item.addEventListener("mouseenter",()=>setLanguageHighlight(item.dataset.zone));
+      item.addEventListener("mouseleave",()=>setLanguageHighlight());
+      item.addEventListener("focus",()=>setLanguageHighlight(item.dataset.zone));
+      item.addEventListener("blur",()=>setLanguageHighlight());
+    });
+    document.addEventListener("keydown",e=>{
+      if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey) return;
+      if(e.target.matches("input, textarea, select, [contenteditable='true']")) return;
+      if(e.key==="ArrowLeft"||e.key==="ArrowRight") {
+        e.preventDefault();
+        stepDay(e.key==="ArrowLeft"?-1:1);
+      }
+    });
+
+
+    sample.forEach(x=>state.calendar[x.day]=x.id);
+    drawRadar(document.querySelector("#hero-radar"),[12,10.5,7.5,13,11,6.5,9.5]);
+    drawLanguageRadar();
+    startStory();
+  </script>
+</body>
+</html>
