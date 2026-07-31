@@ -1,4 +1,4 @@
-# Training Balance Map — a feature concept for Fort
+# Training Balance Map: a feature concept for Fort
 
 A product case study: the feature I would build next if I were [Fort](https://www.fort.cx). Fort automatically detects and logs strength training; Training Balance Map turns that data into a simple answer to two questions:
 
